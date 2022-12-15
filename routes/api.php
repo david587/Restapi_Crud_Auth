@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,8 +16,17 @@ use App\Http\Controllers\AuthController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+//több végpontot akarunk védeni, sanctummal akarjuk védeni
+Route::group(["middleware"=> ["auth:sanctum" ]], function(){
+    //ide tesszük az utvonalakat amit védeni akarunk
+    Route::post("/store",[ProductController::class,"store"]);
+    Route::put('/update/{id}',[ProductController::class,"update"]);
+    Route::delete('delete/{id}',[ProductController::class,"destroy"]);
+
 });
 
 Route::post("/register",[AuthController::class, "signUp"]);
+Route::post("/login", [AuthController::class,"signIn"]);
+Route::get("/show/{id}",[ProductController::class,"show"]);
+Route::get("/index",[ProductController::class,"index"]);
+
